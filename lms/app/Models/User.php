@@ -52,7 +52,7 @@ class User extends Authenticatable
             return asset('storage/' . ltrim($this->avatar_path, '/'));
         }
 
-        return asset('images/default-img.jpeg');
+        return asset('images/default-img.jpg');
     }
 
 }

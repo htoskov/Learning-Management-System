@@ -45,4 +45,14 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function avatarUrl(): string
+    {
+        if ($this->avatar_path) {
+            return asset('storage/' . ltrim($this->avatar_path, '/'));
+        }
+
+        return asset('images/default-img.jpeg');
+    }
+
 }

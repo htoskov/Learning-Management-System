@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProgressController;
+use App\Http\Controllers\SubmitWorkController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -23,5 +24,10 @@ Route::middleware('auth')->group(function () {
 Route::post('/progress/update', [ProgressController::class, 'update'])
     ->middleware(['auth'])
     ->name('progress.update');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/submit-work', [SubmitWorkController::class, 'show'])->name('submit-work.show');
+    Route::post('/submit-work', [SubmitWorkController::class, 'store'])->name('submit-work.store');
+});
     
 require __DIR__.'/auth.php';

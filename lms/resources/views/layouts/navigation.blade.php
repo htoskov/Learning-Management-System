@@ -1,3 +1,8 @@
+                @php
+                    $trophies = (int) (auth()->user()->trophies ?? 0);
+                    $isComplete = $trophies >= 100;
+                @endphp
+
 <nav x-data="{ open: false }" class="absolute inset-x-0 top-0 z-50 bg-transparent">
 
     <!-- Top Bar: Logo (left) + User (right), no background -->
@@ -11,18 +16,38 @@
                 </a>
             </div>
 
-            <!-- Trophies (start after sidenav coverage) -->
-             @if(request()->routeIs('dashboard'))
-                <div
-                    class="hidden sm:flex absolute top-1/2 -translate-y-1/2 transition-all duration-300 ease-in-out"
-                    style="left: calc(var(--sidenav-offset, 30%) + 1.5rem);">
+            @if(request()->routeIs('dashboard'))
+            <div
+                class="absolute top-1/2 -translate-y-1/2 flex items-center gap-4 transition-all duration-300"
+                style="left: calc(var(--sidenav-offset, 30%) + 1.5rem);"
+            >
 
-                    <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur shadow-sm text-gray-700 dark:text-gray-200">
-                        <span class="text-lg leading-none">🏆</span>
-                        <span class="text-sm font-semibold">0 / 100</span>
-                    </div>
+                <!-- 🏆 Trophy Container -->
+                <div class="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/70 dark:bg-gray-800/70 backdrop-blur shadow-sm text-sm text-gray-700 dark:text-gray-200">
+                    <span>🏆 {{ $trophies }} / 100</span>
+
+                    @if($isComplete)
+                        <!-- Green checkmark -->
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            class="h-5 w-5 text-green-500"
+                            viewBox="0 0 24 24"
+                            fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M2.25 12a9.75 9.75 0 1119.5 0 9.75 9.75 0 01-19.5 0zm13.36-1.89a.75.75 0 10-1.22-.88l-3.32 4.59-1.46-1.46a.75.75 0 10-1.06 1.06l2.06 2.06a.75.75 0 001.14-.08l3.86-5.29z"
+                                clip-rule="evenodd"/>
+                        </svg>
+                    @endif
                 </div>
+
+                <!-- 📜 Certificate Container -->
+                @if($isComplete)
+                    <div class="flex items-center gap-2 px-4 py-2 rounded-lg bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 text-sm font-medium shadow-sm">
+                        📜 {{ __('Издаден сертификат') }}
+                    </div>
+                @endif
+            </div>
             @endif
+
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
@@ -50,17 +75,83 @@
                             {{ __('Профил') }}
                         </x-dropdown-link>
 
-                        <x-dropdown-link :href="route('profile.edit')">
+                        <x-dropdown-link :href="route('submit-work.show')">
                             {{ __('Предай проекта си') }}
                         </x-dropdown-link>
 
-                        <x-dropdown-link :href="route('dashboard')">
-                            {{ __('Виж сертификата си') }}
-                        </x-dropdown-link>
+@if($isComplete)
+    <x-dropdown-link :href="route('dashboard')">
+        {{ __('Виж сертификата си') }}
+    </x-dropdown-link>
+@else
+    <div
+        x-data="{ showTip:false }"
+        @mouseenter="showTip=true"
+        @mouseleave="showTip=false"
+        class="relative px-4 py-2 text-sm text-gray-400 dark:text-gray-500 flex items-center justify-between cursor-not-allowed select-none"
+    >
+        <span>{{ __('Виж сертификата си') }}</span>
 
-                        <x-dropdown-link :href="route('dashboard')">
-                            {{ __('Запази среща') }}
-                        </x-dropdown-link>
+        <!-- Lock icon -->
+        <svg xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4 shrink-0"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                d="M16.5 10.5V8a4.5 4.5 0 10-9 0v2.5M6.75 10.5h10.5a1.5 1.5 0 011.5 1.5v6a1.5 1.5 0 01-1.5 1.5H6.75A1.5 1.5 0 015.25 18v-6a1.5 1.5 0 011.5-1.5z"/>
+        </svg>
+
+        <!-- Premium Tooltip -->
+        <div
+            x-show="showTip"
+            x-transition.opacity.scale.duration.150ms
+            class="absolute right-full mr-3 top-1/2 -translate-y-1/2 whitespace-nowrap px-3 py-1.5 text-xs rounded-lg shadow-lg
+                   bg-gray-900 text-white dark:bg-gray-700 z-50"
+        >
+            {{ __('Отключва се при успешно преминат курс.🏆 100 / 100') }}
+        </div>
+    </div>
+@endif
+
+
+                        @if($isComplete)
+                            <x-dropdown-link :href="route('dashboard')">
+                                {{ __('Запази среща') }}
+                            </x-dropdown-link>
+                        @else
+<div
+    x-data="{ showTip:false }"
+    @mouseenter="showTip=true"
+    @mouseleave="showTip=false"
+    class="relative px-4 py-2 text-sm text-gray-400 dark:text-gray-500 flex items-center justify-between cursor-not-allowed select-none"
+>
+    <span>{{ __('Запази среща') }}</span>
+
+    <!-- Lock icon -->
+    <svg xmlns="http://www.w3.org/2000/svg"
+        class="h-4 w-4 shrink-0"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8">
+        <path stroke-linecap="round" stroke-linejoin="round"
+            d="M16.5 10.5V8a4.5 4.5 0 10-9 0v2.5M6.75 10.5h10.5a1.5 1.5 0 011.5 1.5v6a1.5 1.5 0 01-1.5 1.5H6.75A1.5 1.5 0 015.25 18v-6a1.5 1.5 0 011.5-1.5z"/>
+    </svg>
+
+    <!-- ✨ Premium Tooltip -->
+    <div
+        x-show="showTip"
+        x-transition.opacity.scale.duration.150ms
+        class="absolute right-full mr-3 top-1/2 -translate-y-1/2 whitespace-nowrap px-3 py-1.5 text-xs rounded-lg shadow-lg
+               bg-gray-900 text-white dark:bg-gray-700 z-50"
+    >
+        {{ __('Отключва се при успешно преминат курс.🏆 100 / 100') }}
+    </div>
+</div>
+
+                        @endif
 
                         <div class="border-t border-gray-200 dark:border-gray-600 my-1"></div>
 

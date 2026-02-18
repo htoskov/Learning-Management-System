@@ -55,7 +55,7 @@
             <!-- Tutorials (start below top nav, hide when collapsed) -->
             <div x-show="sideOpen" x-transition class="px-6 pt-16 pb-6">
                 <div class="text-xs font-semibold tracking-wider text-gray-500 dark:text-gray-400 mb-3 uppercase">
-                    Tutorials
+                    Видео уроци
                 </div>
                 <div class="space-y-3">
                     @for ($i = 1; $i <= 8; $i++)
@@ -120,7 +120,7 @@
 
                             <!-- Left: Copyright -->
                             <div>
-                                © LMS Systems 2026
+                                © LMS Systems 2026, ВСИЧКИ ПРАВА ЗАПАЗЕНИ
                             </div>
 
                             <!-- Right: Social Icons -->
@@ -169,9 +169,6 @@
     <div class="p-6 text-gray-900 dark:text-gray-100">
         <div class="flex items-center justify-between mb-4">
             <div class="text-lg font-semibold">Video <span x-text="selectedVideo"></span></div>
-            <div class="text-sm text-gray-500 dark:text-gray-400">
-                Resume: {{ $resumeSeconds }}s
-            </div>
         </div>
 
         <div class="relative w-full" style="padding-top: 56.25%;">
@@ -187,7 +184,7 @@
         </div>
 
         <div class="mt-4 text-sm text-gray-500 dark:text-gray-400">
-            (Dev note) This is a test Vimeo video ID. Replace later with your course video ID(s).
+            Материали и допълнителни инструменти:
         </div>
     </div>
 </div>

@@ -12,16 +12,17 @@
             </div>
 
             <!-- Trophies (start after sidenav coverage) -->
-<div
-    class="hidden sm:flex absolute top-1/2 -translate-y-1/2 transition-all duration-300 ease-in-out"
-    style="left: calc(var(--sidenav-offset, 30%) + 1.5rem);">
+             @if(request()->routeIs('dashboard'))
+                <div
+                    class="hidden sm:flex absolute top-1/2 -translate-y-1/2 transition-all duration-300 ease-in-out"
+                    style="left: calc(var(--sidenav-offset, 30%) + 1.5rem);">
 
-                <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur shadow-sm text-gray-700 dark:text-gray-200">
-                    <span class="text-lg leading-none">🏆</span>
-                    <span class="text-sm font-semibold">0 / 100</span>
+                    <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur shadow-sm text-gray-700 dark:text-gray-200">
+                        <span class="text-lg leading-none">🏆</span>
+                        <span class="text-sm font-semibold">0 / 100</span>
+                    </div>
                 </div>
-            </div>
-
+            @endif
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
@@ -46,19 +47,19 @@
 
                     <x-slot name="content">
                         <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Profile') }}
+                            {{ __('Профил') }}
                         </x-dropdown-link>
 
                         <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Submit your work') }}
+                            {{ __('Предай проекта си') }}
                         </x-dropdown-link>
 
                         <x-dropdown-link :href="route('dashboard')">
-                            {{ __('View Certificate') }}
+                            {{ __('Виж сертификата си') }}
                         </x-dropdown-link>
 
                         <x-dropdown-link :href="route('dashboard')">
-                            {{ __('Book Meeting') }}
+                            {{ __('Запази среща') }}
                         </x-dropdown-link>
 
                         <div class="border-t border-gray-200 dark:border-gray-600 my-1"></div>
@@ -67,7 +68,7 @@
                             @csrf
                             <x-dropdown-link :href="route('logout')"
                                 onclick="event.preventDefault(); this.closest('form').submit();">
-                                {{ __('Log Out') }}
+                                {{ __('Излез') }}
                             </x-dropdown-link>
                         </form>
                     </x-slot>

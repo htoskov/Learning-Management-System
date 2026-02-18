@@ -266,6 +266,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 completed: completed ? 1 : 0,
             });
 
+            if (result && typeof result.trophies_awarded === 'number' && result.trophies_awarded > 0) {
+                window.dispatchEvent(new CustomEvent('lms-trophies', {
+                    detail: {
+                        trophies: result.trophies,
+                        delta: result.trophies_awarded
+                    }
+                }));
+            }
+
             if (completed && window.lmsApplyProgress) {
                 const newProgress = result?.video_progress;
 

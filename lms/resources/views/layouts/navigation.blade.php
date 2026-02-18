@@ -22,22 +22,69 @@
                 style="left: calc(var(--sidenav-offset, 30%) + 1.5rem);"
             >
 
-                <!-- 🏆 Trophy Container -->
-                <div class="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/70 dark:bg-gray-800/70 backdrop-blur shadow-sm text-sm text-gray-700 dark:text-gray-200">
-                    <span>🏆 {{ $trophies }} / 100</span>
+            <div
+                x-data="{
+                    trophies: {{ $trophies }},
+                    delta: 0,
+                    showDelta: false,
+                    bump: false,
+                    init() {
+                        window.addEventListener('lms-trophies', (e) => {
+                            const t = Number(e?.detail?.trophies ?? this.trophies);
+                            const d = Number(e?.detail?.delta ?? 0);
 
-                    @if($isComplete)
-                        <!-- Green checkmark -->
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                            class="h-5 w-5 text-green-500"
-                            viewBox="0 0 24 24"
-                            fill="currentColor">
-                            <path fill-rule="evenodd"
-                                d="M2.25 12a9.75 9.75 0 1119.5 0 9.75 9.75 0 01-19.5 0zm13.36-1.89a.75.75 0 10-1.22-.88l-3.32 4.59-1.46-1.46a.75.75 0 10-1.06 1.06l2.06 2.06a.75.75 0 001.14-.08l3.86-5.29z"
-                                clip-rule="evenodd"/>
-                        </svg>
-                    @endif
-                </div>
+                            this.trophies = t;
+
+                            if (d > 0) {
+                                this.delta = d;
+                                this.showDelta = true;
+                                this.bump = true;
+
+                                // stop bump quickly
+                                setTimeout(() => { this.bump = false; }, 220);
+                                // fade out +delta
+                                setTimeout(() => { this.showDelta = false; }, 1100);
+                            }
+                        });
+                    }
+                }"
+                class="relative flex items-center gap-2 px-4 py-2 rounded-lg bg-white/70 dark:bg-gray-800/70 backdrop-blur shadow-sm text-sm text-gray-700 dark:text-gray-200"
+            >
+                <span class="relative">
+                    🏆
+                    <span
+                        x-text="trophies"
+                        class="inline-block tabular-nums transition-transform duration-200"
+                        :class="bump ? 'scale-110' : 'scale-100'"
+                    ></span>
+                    / 100
+
+                    <!-- ✅ Green +10 pop -->
+                    <span
+                        x-show="showDelta"
+                        x-text="'+' + delta"
+                        x-transition:enter="transition ease-out duration-200"
+                        x-transition:enter-start="opacity-0 translate-y-1 scale-95"
+                        x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                        x-transition:leave="transition ease-in duration-900"
+                        x-transition:leave-start="opacity-100 translate-y-0"
+                        x-transition:leave-end="opacity-0 -translate-y-5"
+                        class="pointer-events-none absolute -right-10 -top-2 text-green-600 dark:text-green-400 font-semibold"
+                    ></span>
+                </span>
+
+                @if($isComplete)
+                    <!-- Green checkmark -->
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5 text-green-500"
+                        viewBox="0 0 24 24"
+                        fill="currentColor">
+                        <path fill-rule="evenodd"
+                            d="M2.25 12a9.75 9.75 0 1119.5 0 9.75 9.75 0 01-19.5 0zm13.36-1.89a.75.75 0 10-1.22-.88l-3.32 4.59-1.46-1.46a.75.75 0 10-1.06 1.06l2.06 2.06a.75.75 0 001.14-.08l3.86-5.29z"
+                            clip-rule="evenodd"/>
+                    </svg>
+                @endif
+            </div>
 
                 <!-- 📜 Certificate Container -->
                 @if($isComplete)

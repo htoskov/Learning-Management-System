@@ -35,6 +35,7 @@ class ProgressController extends Controller
                 'ok' => true,
                 'video_progress' => (int) $user->video_progress,
                 'trophies' => (int) $user->trophies,
+                'trophies_awarded' => 0,
             ]);
         }
 
@@ -49,6 +50,7 @@ class ProgressController extends Controller
                 'ok' => true,
                 'video_progress' => (int) $user->video_progress,
                 'trophies' => (int) $user->trophies,
+                'trophies_awarded' => 0,
             ]);
         }
 
@@ -61,6 +63,8 @@ class ProgressController extends Controller
             $isComplete = ($seconds >= (int) floor($duration * 0.90));
         }
 
+        $trophiesAwarded = 0;
+
         if ($isComplete) {
             // Unlock next video (linear)
             $next = min(8, $currentUnlocked + 1);
@@ -69,9 +73,13 @@ class ProgressController extends Controller
                 $user->video_time_seconds = 0; // start next at 0
             }
 
-            // Award trophies (example: 10 per completed video)
+            // Award trophies
             $award = 10;
-            $user->trophies = min(100, ((int) ($user->trophies ?? 0)) + $award);
+            $before = (int) ($user->trophies ?? 0);
+            $after  = min(100, $before + $award);
+
+            $user->trophies = $after;
+            $trophiesAwarded = max(0, $after - $before);
         }
 
         $user->save();
@@ -80,6 +88,7 @@ class ProgressController extends Controller
             'ok' => true,
             'video_progress' => (int) $user->video_progress,
             'trophies' => (int) $user->trophies,
+            'trophies_awarded' => (int) $trophiesAwarded,
         ]);
     }
 }

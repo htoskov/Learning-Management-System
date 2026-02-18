@@ -1,9 +1,9 @@
-<nav x-data="{ open: false }" class="fixed inset-x-0 top-0 z-50 bg-transparent">
+<nav x-data="{ open: false }" class="absolute inset-x-0 top-0 z-50 bg-transparent">
 
     <!-- Top Bar: Logo (left) + User (right), no background -->
     <div class="w-full px-6 relative">
         <div class="flex justify-between h-16">
-            
+
             <!-- Logo -->
             <div class="shrink-0 flex items-center">
                 <a href="{{ route('dashboard') }}">
@@ -12,7 +12,10 @@
             </div>
 
             <!-- Trophies (start after sidenav coverage) -->
-            <div class="hidden sm:flex absolute left-[30%] top-1/2 -translate-y-1/2 pl-6">
+<div
+    class="hidden sm:flex absolute top-1/2 -translate-y-1/2 transition-all duration-300 ease-in-out"
+    style="left: calc(var(--sidenav-offset, 30%) + 1.5rem);">
+
                 <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur shadow-sm text-gray-700 dark:text-gray-200">
                     <span class="text-lg leading-none">🏆</span>
                     <span class="text-sm font-semibold">0 / 100</span>

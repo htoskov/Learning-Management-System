@@ -41,6 +41,18 @@ class CheckoutController extends Controller
         return redirect()->away($session->url);
     }
 
+        public function status(Request $request)
+    {
+        $user = $request->user();
+
+        $paid = ($user->is_admin ?? false) || $user->payments()->where('is_paid', true)->exists();
+
+        return response()->json([
+            'paid' => $paid,
+        ]);
+    }
+
+
     public function success()
     {
         // DO NOT unlock access here; webhook does that.

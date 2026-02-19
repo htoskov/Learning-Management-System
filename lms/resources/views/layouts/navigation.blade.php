@@ -118,6 +118,13 @@
                     </x-slot>
 
                     <x-slot name="content">
+                        @if((bool) (auth()->user()->is_admin ?? false))
+                            <x-dropdown-link :href="route('admin.dashboard')">
+                                {{ __('Admin Dashboard') }}
+                            </x-dropdown-link>
+
+                            <div class="border-t border-gray-200 dark:border-gray-600 my-1"></div>
+                        @endif
                         <x-dropdown-link :href="route('profile.edit')">
                             {{ __('Профил') }}
                         </x-dropdown-link>

@@ -11,7 +11,18 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+
+        $middleware->alias([
+            'paid' => \App\Http\Middleware\EnsureUserIsPaid::class,
+            'admin' => \App\Http\Middleware\AdminMiddleware::class,
+        ]);
+
+        // ✅ Stripe webhooks must bypass CSRF
+        $middleware->validateCsrfTokens(except: [
+            'stripe/webhook',
+        ]);
+        
+
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

@@ -17,7 +17,7 @@ class EnsureUserIsPaid
         }
 
         // Admins optionally bypass paywall
-        if (($user->is_admin ?? false) === true) {
+        if ($user->is_admin) {
             return $next($request);
         }
 

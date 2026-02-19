@@ -8,6 +8,12 @@ use App\Http\Controllers\StripeWebhookController;
 use App\Http\Controllers\SubmitWorkController;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\AdminController;
+
+Route::middleware(['auth', 'verified', 'admin'])->group(function () {
+    Route::get('/admin', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+});
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -40,5 +46,9 @@ Route::get('/checkout/cancel', [CheckoutController::class, 'cancel'])->name('che
 
 // Stripe calls this (NO auth)
 Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle'])->name('stripe.webhook');
+
+Route::get('/payment/status', [CheckoutController::class, 'status'])
+    ->middleware('auth')
+    ->name('payment.status');
 
 require __DIR__.'/auth.php';

@@ -55,4 +55,9 @@ class User extends Authenticatable
         return asset('images/default-img.jpg');
     }
 
+        public function payments()
+    {
+        return $this->hasMany(\App\Models\Payment::class);
+    }
+
 }

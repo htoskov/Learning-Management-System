@@ -3,18 +3,45 @@
                     $isComplete = $trophies >= 100;
                 @endphp
 
-<nav x-data="{ open: false }" class="absolute inset-x-0 top-0 z-50 bg-transparent">
+<nav
+    x-data="{
+        open:false,
+        sideOpen:true,
+        init() {
+            this.sideOpen = (window.lmsSideOpen ?? true);
+            window.addEventListener('lms-sideopen', (e) => this.sideOpen = !!e.detail);
+        }
+    }"
+    x-init="init()"
+    class="absolute inset-x-0 top-0 z-50 bg-transparent"
+>
 
     <!-- Top Bar: Logo (left) + User (right), no background -->
     <div class="w-full px-6 relative">
         <div class="flex justify-between h-16">
 
             <!-- Logo -->
-            <div class="shrink-0 flex items-center">
-                <a href="{{ route('dashboard') }}">
-                    <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
-                </a>
-            </div>
+                <div class="shrink-0 flex items-center">
+                    <a href="{{ route('dashboard') }}" class="flex items-center gap-2">
+                        <!-- Full logo when sidebar is open -->
+                        <img
+                            x-show="sideOpen"
+                            x-cloak
+                            src="{{ asset('images/logo.png') }}"
+                            alt="Logo"
+                            class="h-9 w-auto"
+                        >
+
+                        <!-- logo1 icon when sidebar is closed -->
+                        <img
+                            x-show="!sideOpen"
+                            x-cloak
+                            src="{{ asset('images/logo1.png') }}"
+                            alt="Logo"
+                            class="h-9 w-9 object-contain"
+                        >
+                    </a>
+                </div>
 
             @if(request()->routeIs('dashboard'))
             <div

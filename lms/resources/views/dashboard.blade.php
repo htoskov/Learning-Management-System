@@ -5,28 +5,36 @@
 <x-app-layout>
     {{-- No header slot: we want the main area to be the working layout --}}
 
-    <div class="min-h-screen">
+    <div class="h-screen overflow-hidden">
             <div
-                x-data="{
-                    sideOpen: true,
-                    selectedVideo: {{ $maxUnlocked }},
-                    maxUnlocked: {{ $maxUnlocked }},
-                    justUnlocked: null,
-                    sparkle: false,
-                    applyProgress(newProgress) {
-                        const prev = this.maxUnlocked;
-                        this.maxUnlocked = newProgress ?? this.maxUnlocked;
+x-data="{
+    sideOpen: true,
 
-                        if (newProgress && newProgress > prev) {
-                            this.justUnlocked = newProgress;
-                            this.sparkle = true;
+    init() {
+        window.lmsSideOpen = this.sideOpen;
+        this.$watch('sideOpen', v => window.lmsSideOpen = v);
+        window.dispatchEvent(new CustomEvent('lms-sideopen', { detail: this.sideOpen }));
+    },
 
-                            setTimeout(() => { this.sparkle = false; }, 900);
-                            setTimeout(() => { this.justUnlocked = null; }, 1600);
-                        }
-                    }
-                }"
-                x-init="window.lmsApplyProgress = (p) => applyProgress(p)"
+    selectedVideo: {{ $maxUnlocked }},
+    maxUnlocked: {{ $maxUnlocked }},
+    justUnlocked: null,
+    sparkle: false,
+
+    applyProgress(newProgress) {
+        const prev = this.maxUnlocked;
+        this.maxUnlocked = newProgress ?? this.maxUnlocked;
+
+        if (newProgress && newProgress > prev) {
+            this.justUnlocked = newProgress;
+            this.sparkle = true;
+
+            setTimeout(() => { this.sparkle = false; }, 900);
+            setTimeout(() => { this.justUnlocked = null; }, 1600);
+        }
+    }
+}"
+x-init="init(); window.lmsApplyProgress = (p) => applyProgress(p)"
                 x-effect="document.documentElement.style.setProperty('--sidenav-offset', sideOpen ? '30%' : '6rem')"
                 class="flex min-h-screen"
             >
@@ -37,7 +45,10 @@
             >
             <button
                 type="button"
-                @click="sideOpen = !sideOpen"
+                @click="
+                        sideOpen = !sideOpen;
+                        window.dispatchEvent(new CustomEvent('lms-sideopen', { detail: sideOpen }));
+                    "
                 class="absolute top-1/2 -right-3 -translate-y-1/2 z-10 h-8 w-8 shadow flex items-center justify-center text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
                 aria-label="Toggle sidebar"
             >
@@ -120,7 +131,7 @@
 
                             <!-- Left: Copyright -->
                             <div>
-                                © LMS Systems 2026, ВСИЧКИ ПРАВА ЗАПАЗЕНИ
+                                © LMS Systems 2026
                             </div>
 
                             <!-- Right: Social Icons -->
